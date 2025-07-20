@@ -17,6 +17,8 @@ class Player(pygame.sprite.Sprite):
         self.dash_speed = 32
         self.dash_start_time = 0
         self.dash_direction = pygame.Vector2(0, 0)
+        self.hurtTime = 100
+        self.parryTime = 0
     def dash(self, direction):
         self.dashing = True
         self.dash_start_time = pygame.time.get_ticks()
@@ -93,6 +95,17 @@ class Player(pygame.sprite.Sprite):
             self.rect.x -= self.moveSpeed
         elif keys[pygame.K_RIGHT]:
             self.rect.x += self.moveSpeed
+        if pygame.time.get_ticks() - self.hurtTime < 100:
+            self.image.fill("red")
+        elif self.parryTime > 0:
+            self.image.fill("yellow")
+            self.parryTime -= 1
+        else:
+            self.image.fill("blue")
+    def damage(self):
+        self.hurtTime = pygame.time.get_ticks()
+    def parry(self):
+        self.parryTime = 15
 
 class DashTrail(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -138,7 +151,7 @@ class GreenBall(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(x, y))
         self.direction = direction
         self.speed = 10
-
+        self.striker = 0
     def update(self):
         self.rect.x += self.direction.x * self.speed
         self.rect.y += self.direction.y * self.speed
