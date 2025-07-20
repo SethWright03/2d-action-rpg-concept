@@ -152,8 +152,9 @@ class GreenBall(pygame.sprite.Sprite):
         self.direction = direction
         self.speed = 10
         self.striker = 0
+        self.madeTime = pygame.time.get_ticks()
     def update(self):
         self.rect.x += self.direction.x * self.speed
         self.rect.y += self.direction.y * self.speed
-        if not (0 <= self.rect.x <= 1280 and 0 <= self.rect.y <= 720):
+        if pygame.time.get_ticks() - self.madeTime > 2000:
             self.kill()
