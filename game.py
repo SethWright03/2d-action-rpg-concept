@@ -49,6 +49,8 @@ while running:
                 player.parry()
             if event.key == pygame.K_d:
                 create_skeleton()
+    if 0 > score:
+        running = False
     player.update()
     for skeleton in enemies:
         skeleton.update()
@@ -62,6 +64,7 @@ while running:
                 pass
             if player.parryTime == 0:
                 player.damage()
+                score -= 1
                 projectiles.remove(pygame.sprite.spritecollideany(player, projectiles))
             else:
                 projectile.direction.x = projectile.direction.x * -1
