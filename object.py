@@ -111,3 +111,36 @@ class DashTrail(pygame.sprite.Sprite):
             self.image.set_alpha(128)
         elif pygame.time.get_ticks() - self.creation_time > self.lifetime * 0.25:
             self.image.set_alpha(192)
+
+class Skeleton(pygame.sprite.Sprite):
+    def __init__(self, x, y, textures):
+        super().__init__()
+        self.textures = textures
+        self.image = self.textures["skelClosed"]
+        self.rect = self.image.get_rect(topleft=(x, y))
+        self.openTime = 0
+        self.lastShot = 0
+    def shoot(self,target,texture):
+        self.openTime = pygame.time.get_ticks()
+        self.image = self.textures["skelOpen"]
+        direction = pygame.Vector2(target.rect.x - self.rect.x, target.rect.y - self.rect.y).normalize()
+        projectile = GreenBall(self.rect.centerx, self.rect.centery, direction, texture)
+        return projectile
+    def update(self):
+        if pygame.time.get_ticks() - self.openTime > 100:
+            self.image = self.textures["skelClosed"]
+            self.openTime = 0
+
+class GreenBall(pygame.sprite.Sprite):
+    def __init__(self, x, y, direction, texture):
+        super().__init__()
+        self.image = pygame.image.load("assets/GreenBlast.png").convert_alpha()
+        self.rect = self.image.get_rect(center=(x, y))
+        self.direction = direction
+        self.speed = 10
+
+    def update(self):
+        self.rect.x += self.direction.x * self.speed
+        self.rect.y += self.direction.y * self.speed
+        if not (0 <= self.rect.x <= 1280 and 0 <= self.rect.y <= 720):
+            self.kill()
