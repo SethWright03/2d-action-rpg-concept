@@ -41,6 +41,9 @@ class Player(pygame.sprite.Sprite):
         elif direction == "down-right":
             self.dash_direction = pygame.Vector2(1, 1).normalize()
     def update(self):
+        # handling wall collision in case i need to undo
+        self.startingposX = self.rect.x
+        self.startingposY = self.rect.y
         keys = pygame.key.get_pressed()
         mods = pygame.key.get_mods()
         # Dash logic
@@ -106,6 +109,13 @@ class Player(pygame.sprite.Sprite):
         self.hurtTime = pygame.time.get_ticks()
     def parry(self):
         self.parryTime = 15
+    def undoMove(self):
+        self.rect.x = self.startingposX
+        self.rect.y = self.startingposY
+        for trail in self.dash_trails:
+            trail.kill()
+        self.dashing = False
+        self.dash_direction = pygame.Vector2(0, 0)
 
 class DashTrail(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -158,3 +168,10 @@ class GreenBall(pygame.sprite.Sprite):
         self.rect.y += self.direction.y * self.speed
         if pygame.time.get_ticks() - self.madeTime > 2000:
             self.kill()
+
+class WallTile(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.Surface((50, 50))
+        self.image.fill("brown")
+        self.rect = self.image.get_rect(topleft=(x, y))

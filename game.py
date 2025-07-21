@@ -1,4 +1,5 @@
 import pygame
+import levels
 import object
 
 score = 0
@@ -28,6 +29,7 @@ def update_score():
 #object initialization
 player = object.Player(100, 100)
 enemies = pygame.sprite.Group()
+walls = levels.genLevel(levels.introLayout)
 projectiles = pygame.sprite.Group()
 
 def create_skeleton():
@@ -78,6 +80,10 @@ while running:
                     enemies.remove(skeleton)
                     projectiles.remove(projectile)
                     score += 1
+    wallHits = pygame.sprite.spritecollide(player, walls, False)
+    if wallHits:
+        player.undoMove()
+    wallBlasts = pygame.sprite.groupcollide(walls, projectiles, False, True)
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("gray")
 
@@ -90,6 +96,8 @@ while running:
     for projectile in projectiles:
         projectile.update()
         screen.blit(projectile.image, (projectile.rect.x - cameraX, projectile.rect.y - cameraY))
+    for wall in walls:
+        screen.blit(wall.image, (wall.rect.x - cameraX, wall.rect.y - cameraY))
     screen.blit(player.image, (player.rect.x - cameraX, player.rect.y - cameraY))
     update_score()
     screen.blit(scoreDisplay, (10, 10))
