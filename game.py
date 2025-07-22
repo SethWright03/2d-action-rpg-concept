@@ -90,13 +90,13 @@ while running:
 
     # random spawn logic
     for spawner in spawners:
-        if random.randint(0, 6000) < 12:
-            for skeleton in enemies:
-                if skeleton.rect.colliderect(spawner.rect):
-                    skeletonCollides += 1
-            if skeletonCollides == 0:
-                newSkeleton = object.Skeleton(spawner.rect.x, spawner.rect.y, skeletonTextures)
-                enemies.add(newSkeleton)
+        spawner.skeletonCollides = 0
+        for skeleton in enemies:
+            if skeleton.rect.colliderect(spawner.rect):
+                spawner.skeletonCollides = 1
+        if spawner.skeletonCollides == 0 and random.randint(0, 1000) < 10:
+            newSkeleton = object.Skeleton(spawner.rect.x, spawner.rect.y, skeletonTextures)
+            enemies.add(newSkeleton)
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("gray")

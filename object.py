@@ -120,6 +120,7 @@ class skeleSpawner(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.Surface((50,50))
         self.rect = self.image.get_rect(topleft=(x, y))
+        self.skeletonCollides = 0
 
 class DashTrail(pygame.sprite.Sprite):
     def __init__(self, x, y):
