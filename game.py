@@ -1,8 +1,11 @@
 import pygame
 import levels
 import object
+import random
 
 score = 0
+
+skeletonCollides = 0
 
 # pygame setup
 pygame.init()
@@ -29,7 +32,7 @@ def update_score():
 #object initialization
 player = object.Player(100, 100)
 enemies = pygame.sprite.Group()
-walls = levels.genLevel(levels.introLayout)
+walls, spawners = levels.genLevel(levels.introLayout)
 projectiles = pygame.sprite.Group()
 
 def create_skeleton():
@@ -84,6 +87,17 @@ while running:
     if wallHits:
         player.undoMove()
     wallBlasts = pygame.sprite.groupcollide(walls, projectiles, False, True)
+
+    # random spawn logic
+    for spawner in spawners:
+        if random.randint(0, 6000) < 12:
+            for skeleton in enemies:
+                if skeleton.rect.colliderect(spawner.rect):
+                    skeletonCollides += 1
+            if skeletonCollides == 0:
+                newSkeleton = object.Skeleton(spawner.rect.x, spawner.rect.y, skeletonTextures)
+                enemies.add(newSkeleton)
+
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("gray")
 

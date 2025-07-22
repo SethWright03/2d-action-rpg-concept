@@ -112,10 +112,14 @@ class Player(pygame.sprite.Sprite):
     def undoMove(self):
         self.rect.x = self.startingposX
         self.rect.y = self.startingposY
-        for trail in self.dash_trails:
-            trail.kill()
         self.dashing = False
         self.dash_direction = pygame.Vector2(0, 0)
+
+class skeleSpawner(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.Surface((50,50))
+        self.rect = self.image.get_rect(topleft=(x, y))
 
 class DashTrail(pygame.sprite.Sprite):
     def __init__(self, x, y):
